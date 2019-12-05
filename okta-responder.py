@@ -22,7 +22,7 @@ def oktalogin():
 			verification=auth_key
 			), 200
 	elif request.method == 'POST':
-		return 200
+		return '', 200
 		json_data = request.get_json()
 		events = json_data["data"]["events"][0]
 		user = events["actor"]["alternateId"]
