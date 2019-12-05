@@ -36,4 +36,4 @@ def oktalogin():
 		abort(400)
 
 if __name__ == '__main__':
-	app.run(debug=True, host='0.0.0.0', ssl_context=ssl_cert_file, ssl_key_file))
+	app.run(debug=True, host='0.0.0.0', ssl_context=(ssl_cert_file, ssl_key_file))
