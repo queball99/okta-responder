@@ -30,6 +30,11 @@ def oktalogin():
 			events = json_data["data"]["events"][0]
 			user = events["actor"]["alternateId"]
 			raw_event_time = json_data["eventTime"]
+			login_country = events["client"]["geographicalContext"]["country"]
+			login_state = events["client"]["geographicalContext"]["state"]
+			login_city = events["client"]["geographicalContext"]["city"]
+			login_ip = events["client"]["geographicalContext"]["ipAddress"]
+			login_location = "%s / %s / %s" % (login_country,login_state,login_city)
 			event_time = datetime.strptime(raw_event_time, '%Y-%m-%dT%H:%M:%S.%fZ')
 			delta = timedelta(hours=5)
 			eastern_time = event_time - delta
@@ -37,14 +42,14 @@ def oktalogin():
 			print("Secret Auth Successful")
 			print('%s logged in on %s' % (user,formatted_time))
 
-			# endpoint = "https://dev-246301.okta.com/api/v1/users/%s" % user
-			# headers = {
-			# 	"Accept" : "application/json",
-			# 	"Content-Type" : "application/json",
-			# 	"Authorization" : "%s" % api_auth
-			# }
-			# data = {"profile" : {"last_login" : formatted_time}}
-			# r = requests.post(endpoint, data=json.dumps(data), headers=headers)
+			endpoint = "https://dev-246301.okta.com/api/v1/users/%s" % user
+			headers = {
+				"Accept" : "application/json",
+				"Content-Type" : "application/json",
+				"Authorization" : "%s" % api_auth
+			}
+			data = {"profile" : {"last_login" : formatted_time, "last_login_location" : login_location, "last_login_ip" : login_ip}}
+			r = requests.post(endpoint, data=json.dumps(data), headers=headers)
 			return '', 200
 		else:
 			return 'Unauthorized', 401
