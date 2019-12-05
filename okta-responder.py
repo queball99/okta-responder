@@ -26,7 +26,6 @@ def oktalogin():
 	elif request.method == 'POST':
 		event_auth = request.headers['Okta-Event-Auth']
 		if event_auth == api_check:
-			print("Secret Auth Successful")
 			json_data = request.get_json()
 			events = json_data["data"]["events"][0]
 			user = events["actor"]["alternateId"]
@@ -35,6 +34,7 @@ def oktalogin():
 			delta = timedelta(hours=5)
 			eastern_time = event_time - delta
 			formatted_time = f'{eastern_time:%Y-%m-%d %H:%M:%S}'
+			print("Secret Auth Successful")
 			print('%s logged in on %s' % (user,formatted_time))
 
 			# endpoint = "https://dev-246301.okta.com/api/v1/users/%s" % user
