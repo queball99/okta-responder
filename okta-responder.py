@@ -1,5 +1,10 @@
 #!/usr/bin/python3
 
+## Queball
+## Receives login event info from Okta and posts users
+## Login date, time, country, state, city and IP back to their profile
+## Updated: 2019/12/04
+
 from flask import Flask, request, abort, jsonify
 from datetime import datetime, timedelta
 import json, os, requests
