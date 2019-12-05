@@ -11,6 +11,8 @@ ssl_set = settings["SSL"]
 api_set = settings["API"]
 ssl_cert_file = ssl_set["cert"]
 ssl_key_file = ssl_set["key"]
+api_auth = api_set["auth"]
+api_check = api_set["auth-secret"]
 
 app = Flask(__name__)
 
@@ -22,16 +24,30 @@ def oktalogin():
 			verification=auth_key
 			), 200
 	elif request.method == 'POST':
-		json_data = request.get_json()
-		events = json_data["data"]["events"][0]
-		user = events["actor"]["alternateId"]
-		raw_event_time = json_data["eventTime"]
-		event_time = datetime.strptime(raw_event_time, '%Y-%m-%dT%H:%M:%S.%fZ')
-		delta = timedelta(hours=5)
-		eastern_time = event_time - delta
-		formatted_time = f'{eastern_time:%Y-%m-%d %H:%M:%S}'
-		print('%s logged in on %s' % (user,formatted_time))
-		return '', 200
+		event_auth = request.headers['Okta-Event-Auth']
+		if event_auth == api_check:
+			print("Secret Auth Successful")
+			json_data = request.get_json()
+			events = json_data["data"]["events"][0]
+			user = events["actor"]["alternateId"]
+			raw_event_time = json_data["eventTime"]
+			event_time = datetime.strptime(raw_event_time, '%Y-%m-%dT%H:%M:%S.%fZ')
+			delta = timedelta(hours=5)
+			eastern_time = event_time - delta
+			formatted_time = f'{eastern_time:%Y-%m-%d %H:%M:%S}'
+			print('%s logged in on %s' % (user,formatted_time))
+
+			# endpoint = "https://dev-246301.okta.com/api/v1/users/%s" % user
+			# headers = {
+			# 	"Accept" : "application/json",
+			# 	"Content-Type" : "application/json",
+			# 	"Authorization" : "%s" % api_auth
+			# }
+			# data = {"profile" : {"last_login" : formatted_time}}
+			# r = requests.post(endpoint, data=json.dumps(data), headers=headers)
+			return '', 200
+		else:
+			return 'Unauthorized', 401
 	else:
 		abort(400)
 
