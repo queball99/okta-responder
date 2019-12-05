@@ -38,7 +38,7 @@ def oktalogin():
 			login_country = events["client"]["geographicalContext"]["country"]
 			login_state = events["client"]["geographicalContext"]["state"]
 			login_city = events["client"]["geographicalContext"]["city"]
-			login_ip = events["client"]["geographicalContext"]["ipAddress"]
+			login_ip = events["client"]["ipAddress"]
 			login_location = "%s / %s / %s" % (login_country,login_state,login_city)
 			event_time = datetime.strptime(raw_event_time, '%Y-%m-%dT%H:%M:%S.%fZ')
 			delta = timedelta(hours=5)
