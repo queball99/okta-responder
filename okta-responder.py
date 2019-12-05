@@ -22,6 +22,7 @@ def oktalogin():
 			verification=auth_key
 			), 200
 	elif request.method == 'POST':
+		return 200
 		json_data = request.get_json()
 		events = json_data["data"]["events"][0]
 		user = events["actor"]["alternateId"]
@@ -31,7 +32,6 @@ def oktalogin():
 		eastern_time = event_time - delta
 		formatted_time = f'{eastern_time:%Y-%m-%d %H:%M:%S}'
 		print('%s logged in on %s' % (user,formatted_time))
-		return 200
 	else:
 		abort(400)
 
